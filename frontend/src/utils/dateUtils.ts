@@ -6,21 +6,11 @@ import moment from 'moment';
 export const formatDate = (dateString: string | null): string => {
   if (!dateString) return 'No due date';
   
-  // Use the exact date from backend without timezone conversion
-  const date = moment(dateString);
-  const today = moment().startOf('day');
-  const tomorrow = moment().add(1, 'day').startOf('day');
-  const yesterday = moment().subtract(1, 'day').startOf('day');
-  
-  if (date.isSame(today, 'day')) {
-    return `Today at ${date.format('h:mm A')}`;
-  } else if (date.isSame(tomorrow, 'day')) {
-    return `Tomorrow at ${date.format('h:mm A')}`;
-  } else if (date.isSame(yesterday, 'day')) {
-    return `Yesterday at ${date.format('h:mm A')}`;
+  try {
+    return moment.utc(dateString).format("D MMM YYYY, h:mm A");
+  } catch (error) {
+    return "Invalid date";
   }
-  
-  return date.format('MMM D, YYYY h:mm A');
 };
 
 /**
