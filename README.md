@@ -2,7 +2,6 @@
 
 A modern, enterprise-grade to-do list application that offers dual task creation modes - natural language parsing and manual form entry - to provide flexibility and intelligence in task management.
 
-![Smart Task Manager Screenshot](./assets/Screenshot%202025-05-29%20at%207.38.49%20PM.png)
 
 *Smart Task Manager - AI-powered task management solution that understands natural language and converts meeting minutes into actionable tasks*
 
@@ -10,28 +9,20 @@ A modern, enterprise-grade to-do list application that offers dual task creation
 
 <div align="center">
   <img src="./assets/Screenshot 2025-05-29 at 7.38.49 PM.png" alt="Smart Task Manager Home" width="800"/>
-  <p><em>Home Page - Smart Task Manager with AI-powered task management</em></p>
   
   <img src="./assets/Screenshot 2025-05-29 at 7.39.16 PM.png" alt="Natural Language Task Manager" width="800"/>
-  <p><em>Natural Language Task Manager - Transform casual language into organized tasks</em></p>
   
   <img src="./assets/Screenshot 2025-05-29 at 7.39.30 PM.png" alt="Task Creation Interface" width="800"/>
-  <p><em>Task Creation Interface - Dual mode task creation</em></p>
   
   <img src="./assets/Screenshot 2025-05-29 at 7.39.40 PM.png" alt="Task Dashboard" width="800"/>
-  <p><em>Task Dashboard - View and manage all your tasks</em></p>
   
   <img src="./assets/Screenshot 2025-05-29 at 7.39.53 PM.png" alt="Task Details View" width="800"/>
-  <p><em>Task Details View - Expanded view with task description and metadata</em></p>
   
   <img src="./assets/Screenshot 2025-05-29 at 7.40.04 PM.png" alt="Task Analytics" width="800"/>
-  <p><em>Task Analytics - Visual representation of task status and progress</em></p>
   
   <img src="./assets/Screenshot 2025-05-29 at 7.40.16 PM.png" alt="AI Task Creation" width="800"/>
-  <p><em>AI Task Creation - Natural language parsing in action</em></p>
   
   <img src="./assets/Screenshot 2025-05-29 at 7.40.30 PM.png" alt="Task Management Interface" width="800"/>
-  <p><em>Task Management Interface - Complete task management capabilities</em></p>
 </div>
 
 ## Project Overview
