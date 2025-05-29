@@ -1,0 +1,150 @@
+/* Custom Calendar Styling */
+.custom-calendar {
+  width: 100%;
+  border: none !important;
+  background: transparent !important;
+  font-family: inherit !important;
+}
+
+/* Calendar navigation */
+.react-calendar__navigation {
+  margin-bottom: 10px !important;
+}
+
+.react-calendar__navigation button {
+  min-width: 44px;
+  background: none !important;
+  font-size: 16px;
+  color: #4f46e5;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: #f3f4f6 !important;
+  border-radius: 8px;
+}
+
+.calendar-nav-button {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Month view */
+.react-calendar__month-view__weekdays {
+  text-transform: uppercase;
+  font-weight: 600 !important;
+  font-size: 0.75rem !important;
+  color: #6b7280 !important;
+  padding-bottom: 8px;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  padding: 8px !important;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none !important;
+}
+
+/* Calendar tiles */
+.calendar-tile {
+  position: relative;
+  height: 48px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px !important;
+  margin: 2px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #4b5563 !important;
+}
+
+.react-calendar__tile {
+  padding: 0 !important;
+  background: none !important;
+  line-height: inherit !important;
+  border-radius: 8px !important;
+}
+
+.react-calendar__tile:enabled:hover,
+.react-calendar__tile:enabled:focus {
+  background-color: #f3f4f6 !important;
+}
+
+.react-calendar__tile--now {
+  background: none !important;
+}
+
+.calendar-tile.today {
+  border: 2px solid #4f46e5 !important;
+  font-weight: 600 !important;
+}
+
+.calendar-tile.selected {
+  background-color: #e0e7ff !important;
+  color: #4f46e5 !important;
+  font-weight: 600 !important;
+}
+
+.calendar-tile.has-tasks {
+  font-weight: 600 !important;
+}
+
+.calendar-tile.has-overdue {
+  color: #ef4444 !important;
+}
+
+/* Task indicators */
+.calendar-tile-content {
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.task-indicator {
+  background-color: #c7d2fe;
+  color: #4f46e5;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 1px 5px;
+  min-width: 18px;
+  text-align: center;
+}
+
+.task-indicator.overdue {
+  background-color: #fecaca;
+  color: #ef4444;
+}
+
+.task-indicator.completed {
+  background-color: #d1fae5;
+  color: #10b981;
+}
+
+.today-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #4f46e5;
+}
+
+/* Other calendar elements */
+.react-calendar__navigation button[disabled],
+.react-calendar__tile--active {
+  background-color: #e0e7ff !important;
+  color: #4f46e5 !important;
+}
+
+.react-calendar__tile:disabled {
+  background-color: transparent !important;
+  color: #d1d5db !important;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  color: #9ca3af !important;
+}
