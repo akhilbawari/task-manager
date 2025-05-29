@@ -5,11 +5,10 @@ import { SplitSquareHorizontal, ListChecks, Sparkles, AlignLeft, Brain, User, Ca
 
 interface TaskInputProps {
   onSubmit: (taskString: string) => Promise<void>;
-  onPreview: (taskString: string) => Promise<ParsedTask | null>;
   isAI?: boolean;
 }
 
-const TaskInput: React.FC<TaskInputProps> = ({ onSubmit, onPreview, isAI = true }) => {
+const TaskInput: React.FC<TaskInputProps> = ({ onSubmit, isAI = true }) => {
   const [taskString, setTaskString] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [parsedPreview, setParsedPreview] = useState<ParsedTask | null>(null);
@@ -40,37 +39,7 @@ const TaskInput: React.FC<TaskInputProps> = ({ onSubmit, onPreview, isAI = true 
     }
   };
 
-  const handlePreview = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!taskString.trim()) return;
-
-    setIsLoading(true);
-    try {
-      if (isMultiTask) {
-        // For multi-task mode, we'll simulate parsing multiple tasks
-        // In a real implementation, you'd call a backend endpoint that returns multiple parsed tasks
-        const lines = taskString.split(/[;\n]|\d+\)|\- |• /).filter(line => line.trim().length > 0);
-        const previews = [];
-        
-        for (const line of lines) {
-          const parsed = await onPreview(line.trim());
-          if (parsed) previews.push(parsed);
-        }
-        
-        setParsedPreviews(previews);
-        setShowPreview(true);
-      } else {
-        // Single task mode
-        const parsed = await onPreview(taskString);
-        setParsedPreview(parsed);
-        setShowPreview(true);
-      }
-    } catch (error) {
-      console.error('Preview error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Preview functionality removed as requested
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,9 +139,7 @@ const TaskInput: React.FC<TaskInputProps> = ({ onSubmit, onPreview, isAI = true 
                   'Enter multiple tasks separated by new lines, semicolons, or bullet points.' : 
                   'Try phrases like "Call client Rajeev tomorrow 5pm" or "Submit report P1 by Friday"'}
               </p>
-              <p className="text-sm text-gray-500 mt-1">
-                AI will automatically generate meaningful titles and descriptions for each task
-              </p>
+              {/* Line about AI generating titles and descriptions removed as requested */}
             </div>
           </div>
         </div>
@@ -267,15 +234,6 @@ const TaskInput: React.FC<TaskInputProps> = ({ onSubmit, onPreview, isAI = true 
 
         <div className="flex justify-end space-x-3">
           <button
-            type="button"
-            onClick={handlePreview}
-            disabled={!taskString.trim() || isLoading}
-            className="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
-          >
-            <Sparkles className="h-4 w-4 mr-2" />
-            Preview
-          </button>
-          <button
             type="submit"
             disabled={!taskString.trim() || isLoading}
             className="inline-flex items-center rounded-md border border-transparent bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50"
@@ -291,7 +249,7 @@ const TaskInput: React.FC<TaskInputProps> = ({ onSubmit, onPreview, isAI = true 
             ) : (
               <>
                 <Brain className="h-4 w-4 mr-2" />
-                {isMultiTask ? 'Create AI Tasks' : 'Create AI Task'}
+                {isMultiTask ? 'Create Tasks' : 'Create Task'}
               </>
             )}
           </button>

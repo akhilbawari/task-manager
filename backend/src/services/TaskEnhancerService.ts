@@ -19,7 +19,7 @@ class TaskEnhancerService {
       const enhancedTask = await GeminiService.enhanceTask(task);
       return enhancedTask;
     } catch (error) {
-      console.error('Error enhancing task with GeminiService:', error);
+      // Error enhancing task with GeminiService
       
       // Fallback to local enhancement if GeminiService fails
       const enhancedTitle = this.generateEnhancedTitle(task);
@@ -43,7 +43,7 @@ class TaskEnhancerService {
       const enhancedTasks = await GeminiService.enhanceManyTasks(tasks);
       return enhancedTasks;
     } catch (error) {
-      console.error('Error enhancing multiple tasks with GeminiService:', error);
+      // Error enhancing multiple tasks with GeminiService
       
       // Fallback to local enhancement if GeminiService fails
       const enhancedTasks = [];

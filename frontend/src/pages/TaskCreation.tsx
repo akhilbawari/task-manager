@@ -23,24 +23,23 @@ const TaskCreation: React.FC<TaskCreationProps> = ({ onTasksCreated = () => {} }
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [useTranscriptParser, setUseTranscriptParser] = useState(false);
   
 
 
-  const handlePreviewTask = async (taskString: string) => {
-    try {
-      const response = await api.parseTask(taskString);
-      return response.data;
-    } catch (error) {
-      console.error('Error parsing task:', error);
-      toast.error('Failed to parse task');
-      return null;
-    }
-  };
+  // Preview functionality removed as requested
 
-  const handleCreateTask = async (taskString: string) => {
+  const handleCreateTask = async (taskString: string, useTranscriptParser: boolean = false) => {
     try {
-      await api.createTask(taskString);
-      toast.success('Task created successfully');
+      if (useTranscriptParser) {
+        // Use the transcript parser for natural language input
+        await api.processTranscript(taskString);
+        toast.success('Task created successfully using transcript parser');
+      } else {
+        // Use the regular task creation endpoint
+        await api.createTask(taskString);
+        toast.success('Task created successfully');
+      }
       fetchTasks();
       onTasksCreated();
     } catch (error) {
@@ -168,7 +167,7 @@ const TaskCreation: React.FC<TaskCreationProps> = ({ onTasksCreated = () => {} }
                   <Sparkles className="h-5 w-5 text-indigo-600 mr-2 mt-0.5" />
                   <div>
                     <p className="text-gray-700 font-medium">
-                      Transform casual language into organized tasks with intelligent parsing and automatic extraction.
+                      Transform casual language into organized tasks with intelligent parsing and extraction.
                     </p>
                     <p className="text-gray-700 mt-2">
                       <span className="font-medium">Single task:</span> <span className="text-indigo-700">"Finish landing page Aman by 11pm 20th June P1"</span>
@@ -179,7 +178,8 @@ const TaskCreation: React.FC<TaskCreationProps> = ({ onTasksCreated = () => {} }
                   </div>
                 </div>
               </div>
-              <TaskInput onSubmit={handleCreateTask} onPreview={handlePreviewTask} isAI={true} />
+
+              <TaskInput onSubmit={(taskString) => handleCreateTask(taskString, true)} isAI={false} />
             </div>
           ) : activeTab === 'manual-task' ? (
             <div>

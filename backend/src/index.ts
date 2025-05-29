@@ -38,7 +38,7 @@ app.get('/', (req: Request, res: Response) => {
 
 // Error handling middleware
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
+  // Error stack trace removed
   res.status(500).json({
     success: false,
     error: 'Server Error'
@@ -48,13 +48,13 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // Start server
 app.listen(PORT, () => {
 
-  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  // Server running message removed
   connectDB()
 });
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err: Error) => {
-  console.log(`Error: ${err.message}`);
+  // Error message logging removed
   // Close server & exit process
   process.exit(1);
 });

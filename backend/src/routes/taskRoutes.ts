@@ -6,6 +6,9 @@ const router = express.Router();
 
 import meetingMinutesService from '../services/MeetingMinutesService';
 
+
+// const meetingMinutesService = new MeetingMinutesService();
+
 // Task routes
 router.post('/', validateTaskCreation, TaskController.createTask);
 router.get('/', TaskController.getTasks);
@@ -26,7 +29,7 @@ router.delete('/multiple', TaskController.deleteMultipleTasks);
 router.post('/parse', validateTaskCreation, async(req, res) => {
   try {
     const { minutes } = req.body;
-    const extractedTasks = await meetingMinutesService.analyzeMeetingMinutes(minutes);
+    const extractedTasks = await  meetingMinutesService.analyzeMeetingMinutes(minutes);
     
     // const TaskParserService = require('../services/TaskParserService').default;
     // const parsedTask = TaskParserService.parseTask(taskString);
@@ -36,7 +39,7 @@ router.post('/parse', validateTaskCreation, async(req, res) => {
       data: extractedTasks
     });
   } catch (error) {
-    console.error('Error parsing task:', error);
+    // Error parsing task
     res.status(500).json({
       success: false,
       error: 'Server Error'
@@ -57,7 +60,7 @@ router.post('/transcript/parse', validateTranscript, async (req, res) => {
       data: extractedTasks
     });
   } catch (error) {
-    console.error('Error parsing transcript:', error);
+    // Error parsing transcript
     res.status(500).json({
       success: false,
       error: 'Server Error'
@@ -66,21 +69,56 @@ router.post('/transcript/parse', validateTranscript, async (req, res) => {
 });
 
 // Parse meeting minutes without saving (for frontend preview)
-router.post('/minutes/parse', validateTranscript, async (req, res) => {
+router.post('/minutes/parse', async (req, res) => {
   try {
     const { minutes } = req.body;
-    const extractedTasks = await meetingMinutesService.analyzeMeetingMinutes(minutes);
-
-    res.status(200).json({
-      success: true,
-      count: extractedTasks.length,
-      data: extractedTasks
-    });
+    
+    if (!minutes || minutes.trim().length < 10) {
+      return res.status(400).json({
+        success: false,
+        error: 'Meeting minutes text is too short or empty. Please provide more content.'
+      });
+    }
+    
+    try {
+      const extractedTasks = await meetingMinutesService.analyzeMeetingMinutes(minutes);
+            
+      if (!extractedTasks || extractedTasks.length === 0) {
+        return res.status(200).json({
+          success: true,
+          count: 0,
+          data: [],
+          message: 'No tasks could be identified in the meeting minutes. Try providing more detailed minutes.'
+        });
+      }
+      
+      return res.status(200).json({
+        success: true,
+        count: extractedTasks.length,
+        data: extractedTasks
+      });
+    } catch (aiError) {
+      // Check if it's our custom AI error
+      if (aiError instanceof Error && 
+          (aiError.message.includes('AI task generation failed') || 
+           aiError.message.includes('Unable to process meeting minutes'))) {
+        return res.status(503).json({
+          success: false,
+          error: aiError.message,
+          retryAfter: 60, // Suggest retry after 60 seconds
+          aiOnly: true // Flag to indicate this is an AI-specific error
+        });
+      }
+      
+      // Re-throw for general error handling
+      throw aiError;
+    }
   } catch (error) {
-    console.error('Error parsing meeting minutes:', error);
+    // Error parsing meeting minutes
     res.status(500).json({
       success: false,
-      error: 'Server Error'
+      error: error instanceof Error ? error.message : 'Server Error',
+      message: 'There was a problem processing your meeting minutes. Please try again later.'
     });
   }
 });

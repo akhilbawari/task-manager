@@ -13,7 +13,7 @@ let useMongoDb = true;
 // Function to set the database mode
 export const setDatabaseMode = (useMongo: boolean) => {
   useMongoDb = useMongo;
-  console.log(`Using ${useMongoDb ? 'MongoDB' : 'in-memory store'} for data storage`);
+  // Using MongoDB or in-memory store for data storage
 };
 
 class TaskController {
@@ -152,7 +152,7 @@ class TaskController {
         });
       }
     } catch (error) {
-      console.error('Error creating task:', error);
+      // Error creating task
       res.status(500).json({
         success: false,
         error: 'Server Error'
@@ -178,7 +178,7 @@ class TaskController {
         data: tasks
       });
     } catch (error) {
-      console.error('Error fetching tasks:', error);
+      // Error fetching tasks
       res.status(500).json({
         success: false,
         error: 'Server Error'
@@ -211,7 +211,7 @@ class TaskController {
         data: task
       });
     } catch (error) {
-      console.error('Error fetching task:', error);
+      // Error fetching task
       res.status(500).json({
         success: false,
         error: 'Server Error'
@@ -253,7 +253,7 @@ class TaskController {
         data: task
       });
     } catch (error) {
-      console.error('Error updating task:', error);
+      // Error updating task
       res.status(500).json({
         success: false,
         error: 'Server Error'
@@ -297,7 +297,7 @@ class TaskController {
         data: {}
       });
     } catch (error) {
-      console.error('Error deleting task:', error);
+      // Error deleting task
       res.status(500).json({
         success: false,
         error: 'Server Error'
@@ -320,16 +320,10 @@ class TaskController {
       // Extract tasks from the transcript using Gemini AI
       const extractedTasks = await TranscriptParserService.extractTasksFromTranscript(transcript);
       
-      // Enhance tasks with AI-generated titles and descriptions
-      const enhancedTasks = await TaskEnhancerService.enhanceManyTasks(extractedTasks.map(task => ({
-        ...task,
-        description: 'Extracted from meeting transcript'
-      })));
-      
       // Save all extracted tasks to the database
       const savedTasks = [];
       
-      for (const task of enhancedTasks) {
+      for (const task of extractedTasks) {
         let savedTask;
         if (useMongoDb) {
           savedTask = await Task.create({
@@ -337,7 +331,7 @@ class TaskController {
             assignee: task.assignee || 'Unassigned',
             dueDate: task.dueDate || new Date(),
             priority: task.priority,
-            isAI: true,
+            isAI: false, // Changed to false as requested
             description: task.description || 'Extracted from meeting transcript'
           });
         } else {
@@ -346,7 +340,7 @@ class TaskController {
             assignee: task.assignee || 'Unassigned',
             dueDate: task.dueDate || new Date(),
             priority: task.priority,
-            isAI: true,
+            isAI: false, // Changed to false as requested
             description: task.description || 'Extracted from meeting transcript'
           });
         }
@@ -359,7 +353,7 @@ class TaskController {
         data: savedTasks
       });
     } catch (error) {
-      console.error('Error processing transcript:', error);
+      // Error processing transcript
       res.status(500).json({
         success: false,
         error: 'Server Error'
@@ -416,7 +410,7 @@ class TaskController {
         data: savedTasks
       });
     } catch (error) {
-      console.error('Error processing meeting minutes:', error);
+      // Error processing meeting minutes
       res.status(500).json({
         success: false,
         error: 'Server Error'
@@ -449,7 +443,7 @@ class TaskController {
         data: {}
       });
     } catch (error) {
-      console.error('Error deleting multiple tasks:', error);
+      // Error deleting multiple tasks
       res.status(500).json({
         success: false,
         error: 'Server Error'

@@ -16,7 +16,7 @@ class GeminiService {
   constructor() {
     // In a real application, this would be loaded from environment variables
     this.apiKey = process.env.GEMINI_API_KEY || '';
-    this.apiEndpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+    this.apiEndpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
   }
 
   /**
@@ -25,7 +25,7 @@ class GeminiService {
   public async enhanceTask(task: ParsedTask): Promise<ParsedTask> {
     try {
       if (!this.apiKey) {
-        console.warn('Gemini API key not configured. Using fallback enhancement.');
+        // Gemini API key not configured. Using fallback enhancement.
         return this.fallbackEnhanceTask(task);
       }
 
@@ -45,7 +45,7 @@ class GeminiService {
         isAI: true
       };
     } catch (error) {
-      console.error('Error enhancing task with Gemini API:', error);
+      // Error enhancing task with Gemini API
       return this.fallbackEnhanceTask(task);
     }
   }
@@ -87,6 +87,13 @@ class GeminiService {
   }
 
   /**
+   * Calls the Gemini API with the given prompt (public version)
+   */
+  public async generateContent(prompt: string): Promise<string | null> {
+    return this.callGeminiAPI(prompt);
+  }
+
+  /**
    * Calls the Gemini API with the given prompt
    */
   private async callGeminiAPI(prompt: string): Promise<string | null> {
@@ -104,8 +111,8 @@ class GeminiService {
           }
         ],
         generationConfig: {
-          temperature: 0.7,
-          maxOutputTokens: 200
+          temperature: 0.7
+          // maxOutputTokens removed as requested
         }
       });
       
@@ -121,7 +128,7 @@ class GeminiService {
       
       return null;
     } catch (error) {
-      console.error('Error calling Gemini API:', error);
+      // Error calling Gemini API
       return null;
     }
   }
@@ -138,7 +145,7 @@ class GeminiService {
         description: parsedResponse.description || ''
       };
     } catch (error) {
-      console.error('Error parsing Gemini API response:', error);
+      // Error parsing Gemini API response
       
       // Try to extract data using regex if JSON parsing fails
       const titleMatch = response.match(/enhancedTitle["\s:]+([^"]+)/);
@@ -246,7 +253,7 @@ class GeminiService {
   public async parseMultipleTasks(prompt: string): Promise<ParsedTask[]> {
     try {
       if (!this.apiKey) {
-        console.warn('Gemini API key not configured. Cannot parse multiple tasks.');
+        // Gemini API key not configured. Cannot parse multiple tasks.
         return [];
       }
 
@@ -273,13 +280,13 @@ Ensure each task has all fields, using null for missing values except priority w
       const response = await this.callGeminiAPI(geminiPrompt);
       
       if (!response) {
-        console.error('Failed to get response from Gemini API for multiple tasks');
+        // Failed to get response from Gemini API for multiple tasks
         return [];
       }
 
       return this.parseMultipleTasksResponse(response);
     } catch (error) {
-      console.error('Error parsing multiple tasks with Gemini API:', error);
+      // Error parsing multiple tasks with Gemini API
       return [];
     }
   }
@@ -304,10 +311,10 @@ Ensure each task has all fields, using null for missing values except priority w
         }));
       }
       
-      console.error('Gemini API response is not an array:', parsedResponse);
+      // Gemini API response is not an array
       return [];
     } catch (error) {
-      console.error('Error parsing Gemini API response for multiple tasks:', error);
+      // Error parsing Gemini API response for multiple tasks
       
       // Attempt to extract JSON from a text response that might have additional content
       try {
@@ -328,7 +335,7 @@ Ensure each task has all fields, using null for missing values except priority w
           }
         }
       } catch (e) {
-        console.error('Failed to extract JSON from response:', e);
+        // Failed to extract JSON from response
       }
       
       return [];

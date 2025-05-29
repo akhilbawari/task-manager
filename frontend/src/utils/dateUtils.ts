@@ -1,4 +1,4 @@
-import { format, isToday, isTomorrow, isYesterday, parseISO } from 'date-fns';
+import moment from 'moment';
 
 /**
  * Format a date string for display
@@ -6,17 +6,31 @@ import { format, isToday, isTomorrow, isYesterday, parseISO } from 'date-fns';
 export const formatDate = (dateString: string | null): string => {
   if (!dateString) return 'No due date';
   
-  const date = parseISO(dateString);
+  // Use the exact date from backend without timezone conversion
+  const date = moment(dateString);
+  const today = moment().startOf('day');
+  const tomorrow = moment().add(1, 'day').startOf('day');
+  const yesterday = moment().subtract(1, 'day').startOf('day');
   
-  if (isToday(date)) {
-    return `Today at ${format(date, 'h:mm a')}`;
-  } else if (isTomorrow(date)) {
-    return `Tomorrow at ${format(date, 'h:mm a')}`;
-  } else if (isYesterday(date)) {
-    return `Yesterday at ${format(date, 'h:mm a')}`;
+  if (date.isSame(today, 'day')) {
+    return `Today at ${date.format('h:mm A')}`;
+  } else if (date.isSame(tomorrow, 'day')) {
+    return `Tomorrow at ${date.format('h:mm A')}`;
+  } else if (date.isSame(yesterday, 'day')) {
+    return `Yesterday at ${date.format('h:mm A')}`;
   }
   
-  return format(date, 'MMM d, yyyy h:mm a');
+  return date.format('MMM D, YYYY h:mm A');
+};
+
+/**
+ * Format a date as a relative time (e.g., "2 hours ago", "in 3 days")
+ */
+export const formatRelativeTime = (dateString: string | null): string => {
+  if (!dateString) return 'No due date';
+  
+  const date = moment(dateString);
+  return date.fromNow();
 };
 
 /**

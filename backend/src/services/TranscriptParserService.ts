@@ -1,8 +1,4 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import TaskParserService, { ParsedTask } from './TaskParserService';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 interface ExtractedTask {
   taskDescription: string;
@@ -12,76 +8,22 @@ interface ExtractedTask {
 }
 
 class TranscriptParserService {
-  private genAI: GoogleGenerativeAI;
-  private model: any;
-
   constructor() {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      console.error('GEMINI_API_KEY is not defined in environment variables');
-      throw new Error('GEMINI_API_KEY is required');
-    }
-    this.genAI = new GoogleGenerativeAI(apiKey);
-    // Use the latest model version available
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+    // No initialization needed for manual algorithm
   }
 
   /**
-   * Extracts tasks from a meeting transcript using Gemini AI
+   * Extracts tasks from a meeting transcript using a manual rule-based algorithm
    * @param transcript The meeting transcript to parse
    * @returns Array of parsed tasks
    */
   public async extractTasksFromTranscript(transcript: string): Promise<ParsedTask[]> {
-    try {
-      const prompt = `
-        Extract all tasks from the following meeting transcript. 
-        For each task, identify:
-        1. Task description
-        2. Assignee (the person responsible)
-        3. Deadline (date and/or time)
-        4. Priority (if mentioned, otherwise assume P3)
-
-        Format the output as a JSON array of objects with these properties:
-        [
-          {
-            "taskDescription": "...",
-            "assignee": "...",
-            "deadline": "...",
-            "priority": "P1|P2|P3|P4"
-          }
-        ]
-
-        Meeting Transcript:
-        """
-        ${transcript}
-        """
-      `;
-
-      const result = await this.model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
-      
-      // Extract JSON from the response
-      const jsonMatch = text.match(/\[\s\S]*\]/);
-      if (!jsonMatch) {
-        throw new Error('Failed to extract JSON from AI response');
-      }
-
-      const extractedTasks: ExtractedTask[] = JSON.parse(jsonMatch[0]);
-      
-      // Convert extracted tasks to ParsedTask format
-      return this.convertToTaskFormat(extractedTasks);
-    } catch (error) {
-      console.error('Error extracting tasks from transcript:', error);
-      console.log('Falling back to rule-based task extraction...');
-      
-      // Fallback to rule-based extraction if Gemini API fails
-      return this.extractTasksWithRules(transcript);
-    }
+    // Using only the rule-based extraction method
+    return this.extractTasksWithRules(transcript);
   }
   
   /**
-   * Fallback method to extract tasks using rule-based approach when Gemini AI is unavailable
+   * Extract tasks using rule-based approach
    * @param transcript The meeting transcript to parse
    * @returns Array of parsed tasks
    */
@@ -131,6 +73,9 @@ class TranscriptParserService {
         // Use the existing TaskParserService to parse the task
         const parsedTask = TaskParserService.parseTask(taskLine);
         
+        // Set isAI to false for manually extracted tasks
+        parsedTask.isAI = false;
+        
         // If we found an assignee but the parser didn't, use our extracted assignee
         if (assignee && (!parsedTask.assignee || parsedTask.assignee === '.')) {
           parsedTask.assignee = assignee;
@@ -149,7 +94,7 @@ class TranscriptParserService {
         // Add the task to our list
         tasks.push(parsedTask);
       } catch (error) {
-        console.error('Error parsing line as task:', line, error);
+        // Error parsing line as task
         // Continue with the next line even if this one fails
       }
     }
@@ -167,6 +112,9 @@ class TranscriptParserService {
       
       // Use the existing TaskParserService to parse the task string
       const parsedTask = TaskParserService.parseTask(taskString);
+      
+      // Set isAI to false for manually extracted tasks
+      parsedTask.isAI = false;
       
       // Ensure the assignee is set correctly
       if (!parsedTask.assignee && task.assignee) {
