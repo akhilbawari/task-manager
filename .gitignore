@@ -55,3 +55,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Large assets
+assets/

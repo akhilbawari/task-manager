@@ -5,9 +5,9 @@ This is the backend API for the Natural Language Task Manager, an enterprise-gra
 ## Features
 
 - Parse natural language task inputs like "Finish landing page Aman by 11pm 20th June"
-- Extract task name, assignee, due date/time, and priority
-- AI-powered meeting transcript analysis to extract multiple tasks
-- RESTful API for task management
+- Extract task name, assignee, due date/time, priority, and description
+- Support for both AI-parsed and manually created tasks
+- RESTful API for comprehensive task management
 - Flexible data storage with MongoDB or in-memory store
 - Automatic fallback to in-memory storage if MongoDB is unavailable
 
@@ -23,14 +23,12 @@ This is the backend API for the Natural Language Task Manager, an enterprise-gra
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | /api/tasks | Create a new task from natural language input |
+| POST | /api/tasks | Create a new task (supports both natural language and manual input) |
 | GET | /api/tasks | Get all tasks |
 | GET | /api/tasks/:id | Get a specific task by ID |
 | PUT | /api/tasks/:id | Update a task |
 | DELETE | /api/tasks/:id | Delete a task |
 | POST | /api/tasks/parse | Parse a task string without saving it |
-| POST | /api/tasks/transcript | Process a meeting transcript and save extracted tasks |
-| POST | /api/tasks/transcript/parse | Parse a meeting transcript without saving tasks |
 
 ## Getting Started
 
@@ -42,31 +40,66 @@ This is the backend API for the Natural Language Task Manager, an enterprise-gra
 ### Installation
 
 1. Clone the repository
-2. Navigate to the backend directory
-3. Install dependencies:
+   ```bash
+   git clone https://github.com/yourusername/task-manager.git
    ```
+
+2. Navigate to the backend directory
+   ```bash
+   cd task-manager/backend
+   ```
+
+3. Install dependencies
+   ```bash
    npm install
    ```
-4. Create a `.env` file based on `.env.example`:
+
+4. Create a `.env` file in the root of the backend directory
+   ```bash
+   touch .env
+   ```
+
+5. Add the following environment variables to the `.env` file
    ```
    PORT=5001
    MONGODB_URI=mongodb://localhost:27017/task-manager
    NODE_ENV=development
-   GEMINI_API_KEY=your-gemini-api-key
    ```
-5. Start the development server:
-   ```
+
+6. Start the development server
+   ```bash
    npm run dev
+   ```
+   
+7. For production deployment
+   ```bash
+   npm run build
+   npm start
    ```
 
 ## API Usage Examples
 
-### Create a Task
+### Create a Task using Natural Language (AI Mode)
 
 ```bash
 curl -X POST http://localhost:5001/api/tasks \
   -H "Content-Type: application/json" \
-  -d '{"taskString": "Finish landing page Aman by 11pm 20th June"}'
+  -d '{"taskString": "Finish landing page Aman by 11pm 20th June", "isAI": true}'
+```
+
+### Create a Task Manually
+
+```bash
+curl -X POST http://localhost:5001/api/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Finish landing page",
+    "assignee": "Aman",
+    "dueDate": "2025-06-20T23:00:00.000Z",
+    "priority": "P3",
+    "description": "Complete the new website landing page with all required sections",
+    "isAI": false
+  }'
 ```
 
 ### Parse a Task (without saving)
@@ -75,22 +108,6 @@ curl -X POST http://localhost:5001/api/tasks \
 curl -X POST http://localhost:5001/api/tasks/parse \
   -H "Content-Type: application/json" \
   -d '{"taskString": "Call client Rajeev tomorrow 5pm"}'
-```
-
-### Process a Meeting Transcript
-
-```bash
-curl -X POST http://localhost:5001/api/tasks/transcript \
-  -H "Content-Type: application/json" \
-  -d '{"transcript": "Aman you take the landing page by 10pm tomorrow. Rajeev you take care of client follow-up by Wednesday. Shreya please review the marketing deck tonight."}'
-```
-
-### Parse a Meeting Transcript (without saving)
-
-```bash
-curl -X POST http://localhost:5001/api/tasks/transcript/parse \
-  -H "Content-Type: application/json" \
-  -d '{"transcript": "Aman you take the landing page by 10pm tomorrow. Rajeev you take care of client follow-up by Wednesday. Shreya please review the marketing deck tonight."}'
 ```
 
 ### Get All Tasks
@@ -115,16 +132,20 @@ curl -X DELETE http://localhost:5001/api/tasks/:id
 
 ## Testing
 
-Run the API test script to verify that all endpoints are working correctly:
+Run the tests to verify that all components are working correctly:
 
 ```bash
-npx ts-node src/tests/api.test.ts
+npm test
 ```
 
-Run the task parser test to verify that natural language parsing is working correctly:
+You can also run specific test files:
 
 ```bash
-npx ts-node src/tests/taskParser.test.ts
+# Test API endpoints
+npx jest src/tests/api.test.ts
+
+# Test task parser functionality
+npx jest src/tests/taskParser.test.ts
 ```
 
 ## Project Structure
@@ -133,12 +154,19 @@ npx ts-node src/tests/taskParser.test.ts
 backend/
 ├── src/
 │   ├── config/       # Configuration files
+│   │   └── db.ts     # Database connection setup
 │   ├── controllers/  # Request handlers
+│   │   └── TaskController.ts # Task-related request handlers
 │   ├── middleware/   # Express middleware
+│   │   └── errorHandler.ts  # Error handling middleware
 │   ├── models/       # Mongoose models
+│   │   └── Task.ts   # Task schema and model
 │   ├── routes/       # API routes
+│   │   └── taskRoutes.ts # Task-related routes
 │   ├── services/     # Business logic
-│   ├── tests/        # Test scripts
+│   │   └── TaskParserService.ts # Natural language parsing
+│   ├── utils/        # Utility functions
+│   │   └── dateUtils.ts # Date handling utilities
 │   └── index.ts      # Entry point
 ├── .env              # Environment variables
 ├── package.json      # Dependencies and scripts

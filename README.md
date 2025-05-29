@@ -2,6 +2,38 @@
 
 A modern, enterprise-grade to-do list application that offers dual task creation modes - natural language parsing and manual form entry - to provide flexibility and intelligence in task management.
 
+![Smart Task Manager Screenshot](./assets/Screenshot%202025-05-29%20at%207.38.49%20PM.png)
+
+*Smart Task Manager - AI-powered task management solution that understands natural language and converts meeting minutes into actionable tasks*
+
+## Application Screenshots
+
+<div align="center">
+  <img src="./assets/Screenshot 2025-05-29 at 7.38.49 PM.png" alt="Smart Task Manager Home" width="800"/>
+  <p><em>Home Page - Smart Task Manager with AI-powered task management</em></p>
+  
+  <img src="./assets/Screenshot 2025-05-29 at 7.39.16 PM.png" alt="Natural Language Task Manager" width="800"/>
+  <p><em>Natural Language Task Manager - Transform casual language into organized tasks</em></p>
+  
+  <img src="./assets/Screenshot 2025-05-29 at 7.39.30 PM.png" alt="Task Creation Interface" width="800"/>
+  <p><em>Task Creation Interface - Dual mode task creation</em></p>
+  
+  <img src="./assets/Screenshot 2025-05-29 at 7.39.40 PM.png" alt="Task Dashboard" width="800"/>
+  <p><em>Task Dashboard - View and manage all your tasks</em></p>
+  
+  <img src="./assets/Screenshot 2025-05-29 at 7.39.53 PM.png" alt="Task Details View" width="800"/>
+  <p><em>Task Details View - Expanded view with task description and metadata</em></p>
+  
+  <img src="./assets/Screenshot 2025-05-29 at 7.40.04 PM.png" alt="Task Analytics" width="800"/>
+  <p><em>Task Analytics - Visual representation of task status and progress</em></p>
+  
+  <img src="./assets/Screenshot 2025-05-29 at 7.40.16 PM.png" alt="AI Task Creation" width="800"/>
+  <p><em>AI Task Creation - Natural language parsing in action</em></p>
+  
+  <img src="./assets/Screenshot 2025-05-29 at 7.40.30 PM.png" alt="Task Management Interface" width="800"/>
+  <p><em>Task Management Interface - Complete task management capabilities</em></p>
+</div>
+
 ## Project Overview
 
 This project consists of two main parts:
@@ -47,20 +79,58 @@ This project consists of two main parts:
 
 - Node.js (v14 or later)
 - MongoDB (optional - the app will use an in-memory store if MongoDB is unavailable)
+- npm or yarn package manager
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/task-manager.git
+   cd task-manager
+   ```
+
+2. **Install dependencies for both frontend and backend**
+   ```bash
+   # Install backend dependencies
+   cd backend
+   npm install
+   
+   # Install frontend dependencies
+   cd ../frontend
+   npm install
+   ```
+
+3. **Configure environment variables**
+   - Create a `.env` file in the backend directory with the following variables:
+     ```
+     PORT=5001
+     MONGODB_URI=mongodb://localhost:27017/task-manager
+     NODE_ENV=development
+     ```
 
 ### Running the Application
 
 1. **Start the Backend**
-   ```
-   ./start-backend.sh
+   ```bash
+   cd backend
+   npm run dev
    ```
    This will start the backend server on port 5001.
 
 2. **Start the Frontend**
+   ```bash
+   cd frontend
+   npm start
    ```
+   This will start the React development server on port 3000 and open the application in your browser.
+
+3. **Alternative: Use the provided scripts**
+   If available in your project:
+   ```bash
+   # From the project root
+   ./start-backend.sh
    ./start-frontend.sh
    ```
-   This will start the React development server and open the application in your browser.
 
 ## Project Structure
 
@@ -69,21 +139,28 @@ task-manager/
 ├── backend/           # Node.js API with Express
 │   ├── src/
 │   │   ├── config/    # Configuration files
-│   │   ├── controllers/
-│   │   ├── models/
-│   │   ├── routes/
-│   │   ├── services/  # Includes natural language parsing
-│   │   └── utils/     # Utility functions
+│   │   ├── controllers/# Request handlers
+│   │   ├── middleware/# Express middleware
+│   │   ├── models/    # MongoDB schemas
+│   │   ├── routes/    # API routes
+│   │   ├── services/  # Business logic including natural language parsing
+│   │   ├── utils/     # Utility functions
+│   │   └── index.ts   # Entry point
+│   ├── .env           # Environment variables (create this)
+│   ├── package.json   # Dependencies and scripts
 │   └── README.md      # Backend-specific documentation
 ├── frontend/          # React application
 │   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   └── utils/
+│   │   ├── components/# Reusable UI components
+│   │   ├── pages/     # Main application pages
+│   │   ├── services/  # API integration
+│   │   ├── types/     # TypeScript type definitions
+│   │   ├── utils/     # Helper functions
+│   │   └── App.tsx    # Main application component
+│   ├── package.json   # Dependencies and scripts
 │   └── README.md      # Frontend-specific documentation
-├── start-backend.sh   # Script to start the backend
-└── start-frontend.sh  # Script to start the frontend
+├── start-backend.sh   # Script to start the backend (if available)
+└── start-frontend.sh  # Script to start the frontend (if available)
 ```
 
 ## Usage Examples
@@ -112,6 +189,12 @@ Alternatively, use the manual form to directly input:
 - Detailed description
 
 This mode gives you complete control over all task fields and is perfect for structured task creation.
+
+## Troubleshooting
+
+- **Backend connection issues**: Ensure MongoDB is running if you're using it, or check that the backend server is running on port 5001
+- **Frontend not connecting to backend**: Verify the API URL in `frontend/src/services/api.ts` is correctly pointing to your backend
+- **MongoDB connection errors**: Check your MongoDB connection string in the backend `.env` file
 
 ## Documentation
 
